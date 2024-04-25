@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4D77A5, #86A7D9);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .task-container {
+            max-width: 1000px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .tasks {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .table-container {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        th {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        .form-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            margin: 20px 0;
+            background: linear-gradient(45deg, #E8E8E8, #ffffff);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .task-item:hover {
+            transform: scale(1.02);
+        }
+
+        .task-progress {
+            width: 100%;
+            height: 20px;
+            border: 1px solid #000;
+            display: flex;
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            text-align: center;
+            color: #fff;
+            font-weight: bold;
+            padding: 5px;
+        }
+
+        .pending {
+            background-color: #ff4444;
+        }
+
+        .in-progress {
+            background-color: #ffbb33;
+        }
+
+        .completed {
+            background-color: #66ff66;
+        }
+
+        .task-box {
+            display: flex;
+            flex-direction: column;
+            margin: 20px 0;
+            padding: 10px;
+            background: linear-gradient(45deg, #E8E8E8, #ffffff);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .task-box:hover {
+            transform: scale(1.02);
+        }
+
+        form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(45deg, #0056b3, #003c7f);
+        }
+    </style>
+</head>
+<body>
+    <div class="task-container">
+        <div class="tasks">
+            <h1>Task List</h1>
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th>Task</th>
+                        <th>Progress</th>
+                    </tr>
+                    <!-- Tasks will be displayed here -->
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="dashboard-container">
+        <h1>Project Management Dashboard</h1>
+        <form id="task-form">
+            <label for="task">New Task:</label>
+            <input type="text" id="task" required>
+            <button type="submit">Add Task</button>
+        </form>
+        <div class="task-list" id="task-list">
+            <!-- Tasks will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        // Function to add a new task and update the list
+        function addTask(taskName) {
+            const taskList = document.getElementById('task-list');
+            const table = document.querySelector('table');
+
+            // Create a new task box
+            const taskBox = document.createElement('div');
+            taskBox.classList.add('task-box');
+
+            // Create a table row for the task
+            const tableRow = document.createElement('tr');
+            const taskNameCell = document.createElement('td');
+            taskNameCell.textContent = taskName;
+            const taskStatusCell = document.createElement('td');
+            taskStatusCell.textContent = 'Pending';
+
+            // Create a progress bar
+            const progressBar = document.createElement('div');
+            progressBar.classList.add('task-progress');
+            const progressText = document.createElement('div');
+            progressText.classList.add('progress-bar', 'pending');
+            progressText.textContent = 'Pending';
+
+            // Create a button to change task status
+            const statusButton = document.createElement('button');
+            statusButton.textContent = 'Mark as In Progress';
+
+            // Add click event to change task status
+            statusButton.addEventListener('click', () => {
+                if (taskStatusCell.textContent === 'Pending') {
+                    taskStatusCell.textContent = 'In Progress';
+                    progressText.textContent = 'In Progress';
+                    progressText.classList.remove('pending');
+                    progressText.classList.add('in-progress');
+                    statusButton.textContent = 'Mark as Completed';
+                } else if (taskStatusCell.textContent === 'In Progress') {
+                    taskStatusCell.textContent = 'Completed';
+                    progressText.textContent = 'Completed';
+                    progressText.classList.remove('in-progress');
+                    progressText.classList.add('completed');
+                    statusButton.style.display = 'none';
+                }
+            });
+
+            // Append elements to task box and table row
+            taskBox.appendChild(taskNameCell);
+            taskBox.appendChild(progressBar);
+            taskBox.appendChild(statusButton);
+            progressBar.appendChild(progressText);
+            tableRow.appendChild(taskNameCell.cloneNode(true));
+            tableRow.appendChild(taskStatusCell);
+            table.appendChild(tableRow);
+
+            // Add the task box to the task list
+            taskList.appendChild(taskBox);
+        }
+
+        // Submit form to add a new task
+        const taskForm = document.getElementById('task-form');
+        taskForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const taskInput = document.getElementById('task');
+            const taskName = taskInput.value.trim();
+
+            if (taskName !== '') {
+                addTask(taskName);
+                taskInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
